@@ -10,6 +10,7 @@ class LogEntry:
         Reads the log file and returns a list of LogEntry instances.
         :param file_path: Path to the log file.
         :return: Dictionary with log total number of entries and list of entries.
+        :raises TypeError: If file_path is not a string.
         '''
         entries = []
 
