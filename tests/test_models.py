@@ -165,5 +165,70 @@ class TestLogStatsModel(unittest.TestCase):
         }
         self.assertEqual(stats, expected_stats)
 
+    def test_get_most_recent_logs_default(self):
+        '''
+        Test getting the most recent log entries by date and time.
+        '''
+        recent_logs = self.log_stats.get_most_recent_logs()
+        self.assertEqual(len(recent_logs), 5)
+        self.assertEqual(recent_logs[0], "2025-10-20 16:42:07 INFO Password changed for user: kate.jones@domain.net")
+        self.assertEqual(recent_logs[1], "2025-10-20 15:17:29 WARNING API rate limit exceeded for client 192.168.1.100")
+        self.assertEqual(recent_logs[2], "2025-10-20 14:30:12 CRITICAL System reboot required after update")
+        self.assertEqual(recent_logs[3], "2025-10-20 13:08:55 INFO User login: bob.wilson@startup.io")
+        self.assertEqual(recent_logs[4], "2025-10-20 11:45:33 ERROR Failed to send email to admin@company.org")
+
+    def test_get_most_recent_logs_custom(self):
+        '''
+        Test getting a custom number of recent log entries.
+        '''
+        recent_logs = self.log_stats.get_most_recent_logs(3)
+        self.assertEqual(len(recent_logs), 3)
+        self.assertEqual(recent_logs[0], "2025-10-20 16:42:07 INFO Password changed for user: kate.jones@domain.net")
+        self.assertEqual(recent_logs[1], "2025-10-20 15:17:29 WARNING API rate limit exceeded for client 192.168.1.100")
+        self.assertEqual(recent_logs[2], "2025-10-20 14:30:12 CRITICAL System reboot required after update")
+
+    def test_get_most_recent_logs_empty(self):
+        '''
+        Test getting recent logs when there are no log entries.
+        '''
+        log_stats_empty = LogStats([], 0)
+        recent_logs = log_stats_empty.get_most_recent_logs()
+        self.assertEqual(len(recent_logs), 0)
+        self.assertEqual(recent_logs, [])
+
+    def test_get_most_recent_logs_n_greater_than_total(self):
+        '''
+        Test getting recent logs when n is greater than total log entries.
+        '''
+        recent_logs = self.log_stats.get_most_recent_logs(10)
+        self.assertEqual(len(recent_logs), self.total_entries)
+        self.assertEqual(recent_logs[0], "2025-10-20 16:42:07 INFO Password changed for user: kate.jones@domain.net")
+        self.assertEqual(recent_logs[1], "2025-10-20 15:17:29 WARNING API rate limit exceeded for client 192.168.1.100")
+        self.assertEqual(recent_logs[2], "2025-10-20 14:30:12 CRITICAL System reboot required after update")
+        
+    def test_get_most_recent_logs_invalid_n(self):
+        '''
+        Test getting recent logs with invalid n values.
+        '''
+        with self.assertRaises(ValueError):
+            self.log_stats.get_most_recent_logs(0)  # n should be positive
+        with self.assertRaises(ValueError):
+            self.log_stats.get_most_recent_logs(-3)  # n should be positive
+
+    def test_get_most_recent_logs_incorrect_parameter_type(self):
+        '''
+        Test getting recent logs with incorrect parameter type.
+        '''
+        with self.assertRaises(TypeError):
+            self.log_stats.get_most_recent_logs("five")  # Passing a string instead of an integer
+        with self.assertRaises(TypeError):
+            self.log_stats.get_most_recent_logs(None)  # Passing None instead of an integer
+        with self.assertRaises(TypeError):
+            self.log_stats.get_most_recent_logs(3.5)  # Passing a float instead of an integer
+        with self.assertRaises(TypeError):
+            self.log_stats.get_most_recent_logs([])  # Passing a list instead of an integer
+        with self.assertRaises(TypeError):
+            self.log_stats.get_most_recent_logs({})  # Passing a dict instead of an integer
+
 if __name__ == '__main__':
     unittest.main()

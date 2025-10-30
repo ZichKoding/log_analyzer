@@ -1,5 +1,5 @@
 import re
-from .log_entry import LogEntry
+import datetime
 
 class LogStats:
     def __init__(self, log_entries: list, total_entries: int):
@@ -47,3 +47,26 @@ class LogStats:
         # Store and return the statistics
         self.stats = stats
         return stats
+    
+    def get_most_recent_logs(self, n: int = 5) -> list:
+        '''
+        Get the most recent n log entries based on their date and time.
+        :param n: Number of recent log entries to retrieve.
+        :return: List of the most recent log entries.
+        :raise ValueError: If n is not a positive integer.
+        :raise TypeError: If n is not an integer.
+        '''
+        if not isinstance(n, int):
+            raise TypeError("Parameter n must be an integer.")
+        if n <= 0:
+            raise ValueError("Parameter n must be a positive integer.")
+        # If n is greater than total log entries, adjust n to return all available entries
+        if n > self.total_entries:
+            n = self.total_entries
+        # Return the most recent n log entries based on their date and time
+        sorted_entries = sorted(
+            self.log_entries,
+            key=lambda entry: datetime.datetime.strptime(entry.split(' ')[0] + ' ' + entry.split(' ')[1], '%Y-%m-%d %H:%M:%S'),
+            reverse=True
+        )
+        return sorted_entries[:n]
