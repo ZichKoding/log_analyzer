@@ -11,13 +11,13 @@ class LogStats:
         '''
         Calculate the number of unique users in the log entries. For this to work,
         the log entries must have a format that includes user identification.
-        Example: "2025-10-20 10:23:45 INFO User login: <user_email>", user: <user_email>
+        Example: "2025-10-20 10:23:45 INFO User <action>: <user_email>", user: <user_email>
         regex pattern: r'User (?:login|registration|changed for user): (\S+@\S+\.\S+)', r'user: (\S+@\S+\.\S+)'
         :return: Count of unique users.
         '''
         users = set()
         # Regex pattern to extract user emails from log entries, which looks for lines indicating user actions and captures the email.
-        user_pattern1 = re.compile(r'User (?:login|registration|changed for user): (\S+@\S+\.\S+)')
+        user_pattern1 = re.compile(r'User (?:[A-Za-z ]+): (\S+@\S+\.\S+)', re.IGNORECASE)
         user_pattern2 = re.compile(r'user: (\S+@\S+\.\S+)')
         # Iterate through log entries and extract user emails
         for entry in self.log_entries:
