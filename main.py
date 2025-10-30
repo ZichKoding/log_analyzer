@@ -1,5 +1,7 @@
+import json
 from src.models.log_entry import LogEntry
 from src.models.log_stats import LogStats
+
 
 read_log_file_path = 'logs/server.log'
 
@@ -23,3 +25,14 @@ if __name__ == "__main__":
     print("Log Type Statistics:")
     for log_type, count in log_type_stats.items():
         print(f"{log_type}: {count}")
+
+    # Get the most recent 5 log entries
+    recent_logs = log_stats.get_most_recent_logs(5)
+    print("Most Recent Log Entries:")
+    for log in recent_logs:
+        print(log)
+    
+    # Compile default statistics
+    default_stats = log_stats.compile_default_stats()
+    print("Compiled Default Statistics:")
+    print(json.dumps(default_stats, indent=4))

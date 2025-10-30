@@ -230,5 +230,46 @@ class TestLogStatsModel(unittest.TestCase):
         with self.assertRaises(TypeError):
             self.log_stats.get_most_recent_logs({})  # Passing a dict instead of an integer
 
+    def test_compile_default_stats(self):
+        '''
+        Test that the default stats dictionary is correctly initialized.
+        '''
+        expected_stats = {
+            "total_entries": self.total_entries,
+            "by_level": {
+                "INFO": 3,
+                "ERROR": 1,
+                "WARNING": 2
+            },
+            "unique_users": 3,
+            "recent_entries": [
+                "2025-10-20 16:42:07 INFO Password changed for user: kate.jones@domain.net",
+                "2025-10-20 15:17:29 WARNING API rate limit exceeded for client 192.168.1.100",
+                "2025-10-20 14:30:12 CRITICAL System reboot required after update",
+                "2025-10-20 13:08:55 INFO User login: bob.wilson@startup.io",
+                "2025-10-20 11:45:33 ERROR Failed to send email to admin@company.org"
+            ]
+        }
+        
+        actual = self.log_stats.compile_default_stats()
+        print(actual)
+        print(expected_stats)
+        self.assertEqual(actual, expected_stats)
+        self.assertEqual(actual['total_entries'], self.total_entries)
+        self.assertEqual(actual['by_level']['INFO'], 3)
+        self.assertEqual(actual['by_level']['ERROR'], 1)
+        self.assertEqual(actual['by_level']['WARNING'], 2)
+        self.assertEqual(actual['unique_users'], 3)
+        self.assertEqual(actual['recent_entries'], [
+            "2025-10-20 16:42:07 INFO Password changed for user: kate.jones@domain.net",
+            "2025-10-20 15:17:29 WARNING API rate limit exceeded for client 192.168.1.100",
+            "2025-10-20 14:30:12 CRITICAL System reboot required after update",
+            "2025-10-20 13:08:55 INFO User login: bob.wilson@startup.io",
+            "2025-10-20 11:45:33 ERROR Failed to send email to admin@company.org"
+        ])
+        print(actual)
+        print(expected_stats)
+
+
 if __name__ == '__main__':
     unittest.main()

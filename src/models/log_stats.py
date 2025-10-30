@@ -70,3 +70,16 @@ class LogStats:
             reverse=True
         )
         return sorted_entries[:n]
+    
+    def compile_default_stats(self) -> dict:
+        '''
+        Compile default statistics including total entries, by_level, unique user count,
+        and recent log entries.
+        :return: Dictionary with compiled statistics.
+        '''
+        return {
+            'total_entries': self.total_entries,
+            'by_level': self.calculate_log_type_stats(),
+            'unique_users': self.get_unique_user_count(),
+            'recent_entries': self.get_most_recent_logs()
+        }
