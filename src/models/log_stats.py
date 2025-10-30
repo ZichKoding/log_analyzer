@@ -5,7 +5,6 @@ class LogStats:
     def __init__(self, log_entries: list, total_entries: int):
         self.log_entries = log_entries
         self.total_entries = total_entries
-        self.stats = {}
 
     def get_unique_user_count(self) -> int:
         '''
