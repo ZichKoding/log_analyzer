@@ -153,5 +153,17 @@ class TestLogStatsModel(unittest.TestCase):
         unique_user_count = log_stats_no_users.get_unique_user_count()
         self.assertEqual(unique_user_count, 0)
 
+    def test_calculate_log_type_stats(self):
+        '''
+        Test calculating log type statistics.
+        '''
+        stats = self.log_stats.calculate_log_type_stats()
+        expected_stats = {
+            'INFO': 3,
+            'ERROR': 1,
+            'WARNING': 2
+        }
+        self.assertEqual(stats, expected_stats)
+
 if __name__ == '__main__':
     unittest.main()

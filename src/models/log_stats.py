@@ -29,3 +29,21 @@ class LogStats:
                 users.add(match.group(1))
         # Return the count of unique users
         return len(users)
+    
+    def calculate_log_type_stats(self) -> dict:
+        '''
+        Calculate statistics for different log types (INFO, WARNING, ERROR).
+        :return: Dictionary with counts of each log type.
+        '''
+        # Initialize log type statistics
+        log_types = ['INFO', 'WARNING', 'ERROR']
+        # Create a dictionary to hold the count of each log type
+        stats = {log_type: 0 for log_type in log_types}
+        # Count occurrences of each log type in the log entries
+        for entry in self.log_entries:
+            for log_type in log_types:
+                if f' {log_type} ' in entry:
+                    stats[log_type] += 1
+        # Store and return the statistics
+        self.stats = stats
+        return stats
